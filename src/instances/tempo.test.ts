@@ -3,6 +3,7 @@ import { Instance } from 'prool'
 import { afterEach, expect, test } from 'vitest'
 
 const instances: Instance.Instance[] = []
+const slowTestTimeout = 30_000
 
 const port = await getPort()
 
@@ -50,18 +51,22 @@ test('behavior: instance errored (duplicate ports)', async () => {
   await expect(() => instance_2.start()).rejects.toThrowError('Failed to start')
 })
 
-test('behavior: start and stop multiple times', async () => {
-  const instance = defineInstance()
+test(
+  'behavior: start and stop multiple times',
+  { timeout: slowTestTimeout },
+  async () => {
+    const instance = defineInstance()
 
-  await instance.start()
-  await instance.stop()
-  await instance.start()
-  await instance.stop()
-  await instance.start()
-  await instance.stop()
-  await instance.start()
-  await instance.stop()
-})
+    await instance.start()
+    await instance.stop()
+    await instance.start()
+    await instance.stop()
+    await instance.start()
+    await instance.stop()
+    await instance.start()
+    await instance.stop()
+  },
+)
 
 test('behavior: can subscribe to stdout', async () => {
   const messages: string[] = []

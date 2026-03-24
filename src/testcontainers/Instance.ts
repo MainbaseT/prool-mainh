@@ -65,7 +65,9 @@ export const tempo = Instance.define((parameters?: tempo.Parameters) => {
         .withEnvironment({ RUST_LOG })
         .withCommand(command({ ...args, port: containerPort }))
         .withWaitStrategy(
-          Wait.forLogMessage(/Received (block|new payload) from consensus engine/),
+          Wait.forLogMessage(
+            /Received (block|new payload) from consensus engine/,
+          ),
         )
         .withLogConsumer((stream) => {
           stream.on('data', (data) => {
@@ -111,21 +113,21 @@ export const tempo = Instance.define((parameters?: tempo.Parameters) => {
 export declare namespace tempo {
   export type Parameters = Omit<core_tempo.Parameters, 'binary'> &
     ContainerOptions.Parameters & {
-    /**
-     * Name of the container.
-     */
-    containerName?: string | undefined
-    /**
-     * Docker image to use.
-     */
-    image?: string | undefined
-    /**
-     * Host the server will listen on.
-     */
-    host?: string | undefined
-    /**
-     * Port the server will listen on.
-     */
-    port?: number | undefined
-  }
+      /**
+       * Name of the container.
+       */
+      containerName?: string | undefined
+      /**
+       * Docker image to use.
+       */
+      image?: string | undefined
+      /**
+       * Host the server will listen on.
+       */
+      host?: string | undefined
+      /**
+       * Port the server will listen on.
+       */
+      port?: number | undefined
+    }
 }
