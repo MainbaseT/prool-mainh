@@ -58,6 +58,28 @@ jobs:
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Run tests
-        run: pnpm test --bail=1
+        run: |
+          if [[ -n "$VITE_FORK_URL" ]]; then
+            pnpm test --bail=1
+          else
+            pnpm test --bail=1 \
+              --exclude src/instances/alto.test.ts \
+              --testNamePattern="^(?!.*instance: alto)(?!.*instance: 'alto')"
+          fi
         env:
           VITE_FORK_URL: ${{ secrets.VITE_FORK_URL }}
+
+  tempo-localnet:
+    name: Tempo localnet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Run Tempo localnet tests
+        run: pnpm test --run src/testcontainers/tempoLocalnet.test.ts
+        env:
+          TEST_TEMPO_LOCALNET: "true"
